@@ -19,6 +19,7 @@ import java.time.LocalTime;
 public class EventEditActivity extends AppCompatActivity
 {
     private EditText eventNameET;
+    private EditText eventMessageET; // Hinzufügen der EditText für die Nachricht
     private TextView eventDateTV, eventTimeTV;
 
     private LocalTime time;
@@ -40,6 +41,7 @@ public class EventEditActivity extends AppCompatActivity
     private void initWidgets()
     {
         eventNameET = findViewById(R.id.eventNameET);
+        eventMessageET = findViewById(R.id.eventMessageET); // Initialisieren der Nachrichten-EditText
         eventDateTV = findViewById(R.id.eventDateTV);
         eventTimeTV = findViewById(R.id.eventTimeTV);
     }
@@ -47,7 +49,8 @@ public class EventEditActivity extends AppCompatActivity
     public void saveEventAction(View view)
     {
         String eventName = eventNameET.getText().toString();
-        Event newEvent = new Event(eventName, CalendarUtils.selectedDate, time);
+        String eventMessage = eventMessageET.getText().toString(); // Abrufen der Nachricht
+        Event newEvent = new Event(eventName, eventMessage, CalendarUtils.selectedDate, time); // Übergeben der Nachricht
         eventsList.add(newEvent);
         finish();
     }
