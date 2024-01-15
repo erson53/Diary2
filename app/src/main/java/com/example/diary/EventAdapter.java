@@ -43,10 +43,11 @@ public class EventAdapter extends ArrayAdapter<Event>
         showEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Erstellen Sie einen Intent und übergeben Sie die Event-Daten und den Dateipfad
+                // Erstellen Sie einen Intent und übergeben Sie die Event-Daten und die Nachricht
                 Intent intent = new Intent(getContext(), EventViewActivity.class);
                 intent.putExtra("eventTitle", event.getName());
                 intent.putExtra("eventTime", CalendarUtils.formattedTime(event.getTime()));
+                intent.putExtra("eventMessage", event.getMessage()); // Nachricht hinzufügen
 
                 // Starten Sie die EventViewActivity
                 getContext().startActivity(intent);
