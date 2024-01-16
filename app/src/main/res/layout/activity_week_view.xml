@@ -129,16 +129,15 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="75dp"
         android:orientation="horizontal"
         android:gravity="center">
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Event"
+        android:text="New Entry"
         android:textColor="@color/blue"
-        android:background="@null"
         android:textStyle="bold"
         android:onClick="newEventAction"
         android:layout_gravity="center"
@@ -148,9 +147,8 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Monthly"
+        android:text="Monthly view"
         android:textColor="@color/blue"
-        android:background="@null"
         android:textStyle="bold"
         android:onClick="backToMainActivity"
         android:layout_gravity="center"
