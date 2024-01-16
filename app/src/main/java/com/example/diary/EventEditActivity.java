@@ -8,24 +8,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 
 public class EventEditActivity extends AppCompatActivity
 {
     private EditText eventNameET;
-    private EditText eventMessageET; // Hinzufügen der EditText für die Nachricht
+    private EditText eventMessageET;
     private TextView eventDateTV, eventTimeTV;
 
     private LocalTime time;
 
-    private static final int PICK_IMAGE_REQUEST = 1; // You can use any unique value
-
+    private static final int PICK_IMAGE_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -41,7 +40,7 @@ public class EventEditActivity extends AppCompatActivity
     private void initWidgets()
     {
         eventNameET = findViewById(R.id.eventNameET);
-        eventMessageET = findViewById(R.id.eventMessageET); // Initialisieren der Nachrichten-EditText
+        eventMessageET = findViewById(R.id.eventMessageET);
         eventDateTV = findViewById(R.id.eventDateTV);
         eventTimeTV = findViewById(R.id.eventTimeTV);
     }
@@ -49,9 +48,18 @@ public class EventEditActivity extends AppCompatActivity
     public void saveEventAction(View view)
     {
         String eventName = eventNameET.getText().toString();
-        String eventMessage = eventMessageET.getText().toString(); // Abrufen der Nachricht
-        Event newEvent = new Event(eventName, eventMessage, CalendarUtils.selectedDate, time); // Übergeben der Nachricht
+        String eventMessage = eventMessageET.getText().toString();
+
+        // Lade die bestehenden Ereignisse aus den SharedPreferences
+        ArrayList<Event> eventsList = EventStorage.loadEvents(getApplicationContext());
+
+        // Füge das neue Ereignis zur Liste hinzu
+        Event newEvent = new Event(eventName, eventMessage, CalendarUtils.selectedDate, time);
         eventsList.add(newEvent);
+
+        // Speichere die aktualisierte Liste der Ereignisse in den SharedPreferences
+        EventStorage.saveEvents(getApplicationContext(), eventsList);
+
         finish();
     }
 
@@ -69,15 +77,12 @@ public class EventEditActivity extends AppCompatActivity
             Uri selectedImageUri = data.getData();
 
             if (selectedImageUri != null) {
-                Log.d("EventEditActivity", "Selected Image URI: " + selectedImageUri.toString());
-
                 ImageView uploadedImageView = findViewById(R.id.uploadedImageView);
                 uploadedImageView.setImageURI(selectedImageUri);
                 uploadedImageView.setVisibility(View.VISIBLE);
 
-                EventAdapter eventAdapter = new EventAdapter(this, eventsList);
-                eventAdapter.setImageFilePath(selectedImageUri.toString());
-
+                // Du kannst hier die Verarbeitung des ausgewählten Bildes implementieren
+                // Zum Beispiel: Speichern des Bildes und dessen Pfad in der Event-Instanz
             }
         }
     }

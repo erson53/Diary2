@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
+
 public class EventViewActivity extends AppCompatActivity {
 
     private TextView eventTitleTextView;
@@ -21,64 +23,53 @@ public class EventViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_view);
 
-        // Initialisieren der Views
         eventTitleTextView = findViewById(R.id.eventTitleTextView);
         eventTimeTextView = findViewById(R.id.eventTimeTextView);
         eventMessageTextView = findViewById(R.id.eventMessageTextView);
         deleteEventButton = findViewById(R.id.deleteEventButton);
         backToWeekButton = findViewById(R.id.backToWeekButton);
 
-        // Überprüfen, ob Intent-Daten übergeben wurden
         Intent intent = getIntent();
         if (intent != null) {
             String eventTitle = intent.getStringExtra("eventTitle");
             String eventTime = intent.getStringExtra("eventTime");
             String eventMessage = intent.getStringExtra("eventMessage");
 
-            // Setzen der Daten in die TextViews
             eventTitleTextView.setText(eventTitle);
             eventTimeTextView.setText(eventTime);
             eventMessageTextView.setText(eventMessage);
 
-            // Hinzufügen eines Click-Listeners zum Löschen des Eintrags
             deleteEventButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    // Hier kannst du den Code zum Löschen des Eintrags implementieren
-                    deleteEvent();
+                    deleteEvent(eventTitle);
                 }
             });
         }
+
         backToWeekButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Hier kannst du den Code zum Zurückkehren zur Woche implementieren
                 backToWeekView();
             }
         });
     }
 
-    private void deleteEvent() {
-        // Annahme: Event.eventsList ist deine Liste von Ereignissen
-        Intent intent = getIntent();
-        if (intent != null) {
-            String eventTitle = intent.getStringExtra("eventTitle");
+    private void deleteEvent(String eventTitle) {
+        ArrayList<Event> updatedEventsList = new ArrayList<>(Event.eventsList); // Kopiere die Liste
 
-            // Durchsuche die Event-Liste nach dem zu löschenden Event
-            for (Event event : Event.eventsList) {
-                if (event.getName().equals(eventTitle)) {
-                    // Wenn das Event gefunden wurde, entferne es aus der Liste
-                    Event.eventsList.remove(event);
-                    break; // Beende die Schleife, da das Event gefunden wurde
-                }
+        for (Event event : updatedEventsList) {
+            if (event.getName().equals(eventTitle)) {
+                updatedEventsList.remove(event); // Nur das ausgewählte Event löschen
+                break;
             }
         }
 
-        // Schließe die Activity nach dem Löschen
+        EventStorage.saveEvents(getApplicationContext(), updatedEventsList); // Aktualisierte Liste speichern
         finish();
-    }
+        }
+
     private void backToWeekView() {
-        // Starte die WeekViewActivity und schließe die aktuelle Activity
         Intent intent = new Intent(this, WeekViewActivity.class);
         startActivity(intent);
         finish();

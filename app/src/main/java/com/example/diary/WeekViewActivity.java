@@ -9,12 +9,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-import static com.example.diary.CalendarUtils.daysInMonthArray;
 import static com.example.diary.CalendarUtils.daysInWeekArray;
 import static com.example.diary.CalendarUtils.monthYearFromDate;
 
@@ -23,6 +21,7 @@ public class WeekViewActivity extends AppCompatActivity implements CalendarAdapt
     private TextView monthYearText;
     private RecyclerView calendarRecyclerView;
     private ListView eventListView;
+    private ArrayList<Event> eventsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -30,6 +29,7 @@ public class WeekViewActivity extends AppCompatActivity implements CalendarAdapt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_week_view);
         initWidgets();
+        loadEvents();
         setWeekView();
     }
 
@@ -49,9 +49,8 @@ public class WeekViewActivity extends AppCompatActivity implements CalendarAdapt
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 7);
         calendarRecyclerView.setLayoutManager(layoutManager);
         calendarRecyclerView.setAdapter(calendarAdapter);
-        setEventAdpater();
+        setEventAdapter();
     }
-
 
     public void previousWeekAction(View view)
     {
@@ -76,12 +75,19 @@ public class WeekViewActivity extends AppCompatActivity implements CalendarAdapt
     protected void onResume()
     {
         super.onResume();
-        setEventAdpater();
+        eventsList = EventStorage.loadEvents(getApplicationContext()); // Aktualisiere die Liste beim Wiederaufnehmen der Aktivität
+        setEventAdapter();
     }
 
-    private void setEventAdpater()
+    private void setEventAdapter()
     {
-        ArrayList<Event> dailyEvents = Event.eventsForDate(CalendarUtils.selectedDate);
+        ArrayList<Event> dailyEvents = new ArrayList<>();
+        for (Event event : eventsList) {
+            if (event.getDate().equals(CalendarUtils.selectedDate)) {
+                dailyEvents.add(event);
+            }
+        }
+
         EventAdapter eventAdapter = new EventAdapter(getApplicationContext(), dailyEvents);
         eventListView.setAdapter(eventAdapter);
     }
@@ -94,5 +100,9 @@ public class WeekViewActivity extends AppCompatActivity implements CalendarAdapt
     public void backToMainActivity(View view) {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+    }
+
+    private void loadEvents() {
+        eventsList = EventStorage.loadEvents(getApplicationContext());
     }
 }
